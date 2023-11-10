@@ -6,3 +6,9 @@ class LoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email', 'password')
         extra_kwargs = {'email': {'required': True, "allow_blank": False}, 'password': {'required': True}} 
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'password', 'username')
+        extra_kwargs = {'email': {'required': True, "allow_blank": False}, 'password': {'required': True}, 'username': {'required': True}}

@@ -7,8 +7,8 @@ urlpatterns = [
     path('api/v1/login/', views.login),
     path('api/v1/login', views.login),
 
-    path('api/v1/reg/', views.register),
-    path('api/v1/reg', views.register),
+    path('api/v1/users/', views.users_list),
+    path('api/v1/user', views.users_list),
 
 
     path('api/v1/topics/', views.topics_list),
