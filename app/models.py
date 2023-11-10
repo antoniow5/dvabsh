@@ -25,13 +25,12 @@ class Topic(models.Model):
     bump = models.DateTimeField(auto_now_add= True)
     
 
-
 class Comment(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=2500, blank=False, null = False)
     created_at = models.DateTimeField(auto_now_add= True)
-    answer_to = models.ManyToManyField('self', null= True, blank=True)
+    answer_to = models.ManyToManyField('self', blank=True)
 
     def save(self, *args, **kwargs):
         self.topic.bump = self.created_at
@@ -43,3 +42,21 @@ class Token(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=1023)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class UserMeta(models.Model):
+    USER_ROLES = (
+            ('admin', 'Admin'),
+            ('moderator', 'Moderator'),
+            ('user', 'User')
+        )     
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10,choices=USER_ROLES,default='user') 
+
+class CategoryModerator(models.Model):
+    user_meta = models.ForeignKey(UserMeta, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    permissions = models.CharField(max_length=2**8, on_delete=models.CASCADE)
+
+# Я полежу немного если что напишешь в тг ок??
