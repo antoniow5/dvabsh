@@ -91,15 +91,20 @@ def topics_list(request):
             raise PermissionDenied({"message":"You don't have permission"})
 
 
+@api_view(['GET','DELETE'])
+def topics_detail(request, id):
+    if request.method == 'GET':
+        topic = Topic.objects.get(id = id)
+        return_dict = {"title": topic.title,
+                       "text": topic.text,
+                       "author": topic.author.username,
+                       "created_at": topic.created_at,
+                       "category": topic.category.slug,
+                       "bump": topic.bump}
+        comments = topic.comments.order_by('-created_at')
+        comments = comments.select_related('author').prefetch_related('answer_to')
+        return_dict['comments'] =  comments.values('id', 'author', 'text', 'created_at', 'answer_to')
+        return Response(return_dict)
 
-def test1(request):
 
-    category = Category.objects.get(slug = 'prog')
-    users = request.user
-  
-    
-    topics = baker.make('app.Topic', category = category, _quantity=10000, author = users, _bulk_create = True)
-    topics1 =   Topic.objects.all().iterator()
 
-    comments1 = baker.make("app.Comment", author = users, topic = cycle(topics1), _quantity=20, _bulk_create = True)
-    return Response(status = status.HTTP_201_CREATED)
